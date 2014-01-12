@@ -1,4 +1,4 @@
-package com.besuikerd.networkcraft.tileentity;
+package com.besuikerd.test;
 
 import com.besuikerd.core.gui.GuiBaseInventory;
 import com.besuikerd.core.gui.element.ElementContainer;

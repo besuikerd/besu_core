@@ -3,14 +3,12 @@ package com.besuikerd.core;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.besuikerd.networkcraft.NetworkCraft;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 
 /**
- * Besuikerd's client only Logger
+ * Besuikerd's Logger
  * @author Besuikerd
  *
  */
@@ -25,14 +23,14 @@ public class ClientLogger {
 	public static void log(Level level, Object msg, Object... params){
 		Side side = FMLCommonHandler.instance().getEffectiveSide();
 		if(side == Side.CLIENT){
-			logger.log(level, String.format("%s|%s", side, String.format(msg.toString(), params)));
+			logger.log(level, String.format("%s|%s", FMLCommonHandler.instance().getEffectiveSide(), msg == null ? "null" : String.format(msg.toString(), params)));
 		}
 	}
 	
 	public static void log(Level level, Object msg){
 		Side side = FMLCommonHandler.instance().getEffectiveSide();
 		if(side == Side.CLIENT){
-			logger.log(level, String.format("%s|%s", side, msg));
+			logger.log(level, String.format("%s|%s", FMLCommonHandler.instance().getEffectiveSide(), msg));
 		}
 	}
 	
@@ -61,13 +59,13 @@ public class ClientLogger {
 	}
 	
 	public static void debug(Object msg, Object... params){
-		if(NetworkCraft.DEBUG_MODE){
+		if(BLogger.isDebugMode()){
 			info(msg, params);
 		}
 	}
 	
 	public static void debug(String msg){
-		if(NetworkCraft.DEBUG_MODE){
+		if(BLogger.isDebugMode()){
 			info(msg);
 		}
 	}

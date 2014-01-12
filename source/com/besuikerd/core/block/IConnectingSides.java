@@ -1,4 +1,4 @@
-package com.besuikerd.networkcraft.tileentity;
+package com.besuikerd.core.block;
 
 import com.besuikerd.core.BlockSide;
 

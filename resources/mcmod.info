@@ -1,10 +1,10 @@
 [
 {
-  "modid": "NetworkCraft",
-  "name": "NetworkCraft",
+  "modid": "BesuCore",
+  "name": "BesuikerdCore",
   "version": "@VERSION@",
   "mcversion": "@MC_VERSION@",
-  "description": "A mod about networking",
+  "description": "Core classes for Besuikerd's mods",
   "credits": "",
   "logoFile": "",
   "url": "networkcraft.besuikerd.com",

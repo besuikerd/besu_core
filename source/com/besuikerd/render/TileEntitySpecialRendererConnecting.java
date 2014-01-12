@@ -6,7 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
 import com.besuikerd.core.BlockSide;
-import com.besuikerd.networkcraft.tileentity.IConnectingSides;
+import com.besuikerd.core.block.IConnectingSides;
 
 public abstract class TileEntitySpecialRendererConnecting extends TileEntitySpecialRenderer{
 

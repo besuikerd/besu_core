@@ -40,7 +40,7 @@ import com.google.common.io.ByteArrayDataOutput;
 
 public abstract class Element extends Gui implements IProcessData {
 
-	protected ResourceLocation textures = new ResourceLocation("networkcraft", "textures/gui/elements.png");
+	protected ResourceLocation textures = new ResourceLocation("besucore", "textures/gui/elements.png");
 
 	public static final int ENABLED = 1;
 	public static final int HOVERING = 2;

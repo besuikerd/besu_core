@@ -3,8 +3,6 @@ package com.besuikerd.core;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.besuikerd.networkcraft.NetworkCraft;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.FMLLog;
 
@@ -68,6 +66,10 @@ public class BLogger {
 		if(debugMode){
 			info(msg);
 		}
+	}
+	
+	public static boolean isDebugMode(){
+		return debugMode;
 	}
 	
 	public static void setDebugMode(boolean enabled){

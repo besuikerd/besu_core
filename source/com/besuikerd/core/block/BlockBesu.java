@@ -1,9 +1,5 @@
 package com.besuikerd.core.block;
 
-import com.besuikerd.core.BlockSide;
-import com.besuikerd.core.ServerLogger;
-import com.besuikerd.networkcraft.NCIconRegister;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -13,21 +9,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import com.besuikerd.core.BlockSide;
+import com.besuikerd.core.ServerLogger;
+
 public class BlockBesu extends Block{
 	
 	public BlockBesu(int id, Material material) {
 		super(id, material);
 		setUnlocalizedName("nc");
-	}
-	
-	
-	
-	@Override
-	public final void registerIcons(IconRegister reg) {
-		registerIcons(new NCIconRegister(reg));
-	}
-	
-	public void registerIcons(NCIconRegister reg){
 	}
 	
 	public String appendUnlocalizedName(String toAppend){
