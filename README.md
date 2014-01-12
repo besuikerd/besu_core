@@ -1,3 +1,3 @@
-#NetworkCraft
+#BesuCore
 
-## A mod about networking
+## Besuikerd's core mod
