@@ -51,7 +51,7 @@ public class ElementButton extends ElementStatefulBackground{
         @Override
         protected boolean onPressed(int x, int y, int which) {
                 super.onPressed(x, y, which);
-                BLogger.debug("onPressed (%d, %d, %d)", x, y, which);
+                mc.sndManager.playSoundFX("random.click", 1.0F, 1.0F);
                 getRoot().requestFocus(this);
                 return true;
         }

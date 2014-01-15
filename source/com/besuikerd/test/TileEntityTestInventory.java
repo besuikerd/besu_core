@@ -1,6 +1,14 @@
 package com.besuikerd.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
+
+import com.besuikerd.core.ClientLogger;
 import com.besuikerd.core.gui.GuiBaseInventory;
+import com.besuikerd.core.gui.element.Element;
 import com.besuikerd.core.gui.element.ElementContainer;
 import com.besuikerd.core.gui.element.ElementItemContainerArray;
 import com.besuikerd.core.gui.element.ElementLabel;
@@ -8,25 +16,36 @@ import com.besuikerd.core.gui.element.ElementPlayerInventory;
 import com.besuikerd.core.gui.element.ElementProgressBar;
 import com.besuikerd.core.gui.layout.Alignment;
 import com.besuikerd.core.gui.layout.HorizontalLayout;
-import com.besuikerd.core.gui.layout.VerticalLayout;
+import com.besuikerd.core.inventory.CraftingGroup;
 import com.besuikerd.core.inventory.InventoryGroup;
+import com.besuikerd.core.inventory.InventoryStack;
 import com.besuikerd.core.inventory.TileEntityInventory;
+import com.besuikerd.core.utils.Tuple;
 
 public class TileEntityTestInventory extends TileEntityInventory {
 	
 	@Override
 	public void initInventory(){
 		inventory.addGroups(
-			new InventoryGroup("first", 9).shiftGroups("second"),
-			new InventoryGroup("second", 9).shiftGroups("third"),
-			new InventoryGroup("third", 9).shiftGroups("fourth"),
-			new InventoryGroup("fourth", 9).shiftGroups(InventoryGroup.PLAYER_INVENTORY_SHIFTGROUPS),
-			InventoryGroup.playerInventory().shiftGroups("first"),
-			InventoryGroup.playerInventoryHotbar().shiftGroups("first")
+			new InventoryGroup("craft", 9).shiftGroups(InventoryGroup.PLAYER_INVENTORY_SHIFTGROUPS),
+			new InventoryGroup("result", 1, new InventoryStack.StackBuilder()),
+			InventoryGroup.playerInventory().shiftGroups("craft"),
+			InventoryGroup.playerInventoryHotbar().shiftGroups("craft")
 		);
 	}
 	
-	
+	public void debugFakeSlots(Element e){
+		InventoryGroup group = inventory.getGroup("result");
+		
+		
+		List<Tuple> tuples = new ArrayList<Tuple>();
+		for(InventoryStack stack : group.getStacks()){
+			if(stack.getStack() != null){
+				tuples.add(new Tuple(stack.getStack().itemID, stack.getStack().stackSize, stack.getStack().stackTagCompound));
+			}
+		}
+		ClientLogger.debug("items: %s", tuples);
+	}
 	
 	public static class Gui extends GuiBaseInventory{
 
@@ -36,16 +55,12 @@ public class TileEntityTestInventory extends TileEntityInventory {
 			root.add(
 				new ElementLabel("TileEntityTestInventory").align(Alignment.CENTER),
 				
-				new ElementContainer().layout(new VerticalLayout(0,5)).add(
-					new ElementContainer().layout(new HorizontalLayout(5, 0)).add(
-						new ElementItemContainerArray(this, inventory.getGroup("first"), 3),
-						new ElementItemContainerArray(this, inventory.getGroup("second"), 3)
-					),
-					new ElementContainer().layout(new HorizontalLayout(5, 0)).add(
-						new ElementItemContainerArray(this, inventory.getGroup("fourth"), 3),
-						new ElementItemContainerArray(this, inventory.getGroup("third"), 3)
-					)
-				),
+				new ElementContainer().layout(new HorizontalLayout(5,0)).add(
+					new ElementItemContainerArray(this, inventory.getGroup("craft"), 3),
+					ElementProgressBar.progressBarArrow().align(Alignment.CENTER),
+					new ElementItemContainerArray(this, inventory.getGroup("result"), 1).align(Alignment.CENTER)
+//					new ElementButton("Print").align(Alignment.CENTER).trigger(Trigger.PRESSED, "debugFakeSlots")
+				).align(Alignment.CENTER),
 				
 				
 				new ElementPlayerInventory(this, inventory)
@@ -62,5 +77,16 @@ public class TileEntityTestInventory extends TileEntityInventory {
 		}
 	}
 	
-	
+	@Override
+	public void onGroupChanged(InventoryGroup group) {
+		ClientLogger.debug("group: %s", group.getName());
+		if(group.getName().equals("craft")){
+			
+			ItemStack result = CraftingManager.getInstance().findMatchingRecipe(new CraftingGroup(group), this.worldObj);
+			
+			ClientLogger.debug("result: %s", result);
+			
+			setInventorySlotContents(inventory.getGroup("result").getStacks().iterator().next().getIndex(), result);
+		}
+	}
 }

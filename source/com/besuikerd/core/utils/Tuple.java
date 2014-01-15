@@ -1,5 +1,7 @@
 package com.besuikerd.core.utils;
 
+import java.util.Arrays;
+
 /**
  * class representing a tuple. Helper functions are defined for tuples up to 10
  * elements
@@ -342,5 +344,10 @@ public class Tuple {
 
 	public <E> E objN(int n, Class<E> cls) {
 		return cls.cast(n);
+	}
+	
+	@Override
+	public String toString() {
+		return Arrays.toString(elements);
 	}
 }

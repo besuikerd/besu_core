@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.w3c.dom.ls.LSInput;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 
 import com.besuikerd.core.BlockSide;
+import com.besuikerd.core.ClientLogger;
 import com.besuikerd.core.packet.IProcessData;
 import com.besuikerd.core.utils.IntList;
 import com.google.common.io.ByteArrayDataInput;
@@ -29,6 +31,8 @@ public class Inventory implements ISidedInventory, IProcessData{
 	
 	protected String name;
 	
+	protected Set<InventoryChangedListener> listeners;
+	
 	public Inventory() {
 		this.name = "besu.inv";
 		this.stacks = new ArrayList<InventoryStack>();
@@ -37,6 +41,7 @@ public class Inventory implements ISidedInventory, IProcessData{
 		for(int i = 0 ; i < accessibleSides.length ; i++){
 			accessibleSides[i] = IntList.rawIntList();
 		}
+		this.listeners = new HashSet<InventoryChangedListener>();
 	}
 	
 	public Inventory addGroup(InventoryGroup group){
@@ -61,10 +66,10 @@ public class Inventory implements ISidedInventory, IProcessData{
 	
 	private void addStack(InventoryStack stack){
 		stacks.add(stack);
+		stack.index = stacks.size() - 1;
 		for(BlockSide b : stack.getBlockSides()){
 			accessibleSides[b.ordinal()].add(stacks.size() - 1);
 		}
-		
 	}
 	
 	public InventoryGroup getGroup(String name){
@@ -148,10 +153,22 @@ public class Inventory implements ISidedInventory, IProcessData{
 	public int getInventoryStackLimit() {
 		return 64;
 	}
-
+	
+	
 	@Override
 	public void onInventoryChanged() {
-		
+	}
+	
+	public void onGroupChanged(InventoryGroup group){
+		for(InventoryChangedListener listener : listeners){
+			listener.onGroupChanged(group);
+		}
+	}
+	
+	public void onStackChanged(InventoryStack stack){
+		for(InventoryChangedListener listener : listeners){
+			listener.onStackChanged(stack);
+		}
 	}
 
 	@Override
@@ -171,7 +188,7 @@ public class Inventory implements ISidedInventory, IProcessData{
 	public boolean isItemValidForSlot(int i, ItemStack itemstack) {
 		if(i < stacks.size()){
 			InventoryStack invStack = stacks.get(i);
-			return invStack.stack == null || invStack.isReal && itemstack.isItemEqual(invStack.stack);
+			return invStack.stack == null || invStack.real && itemstack.isItemEqual(invStack.stack);
 		}
 		return false;
 	}
@@ -185,7 +202,7 @@ public class Inventory implements ISidedInventory, IProcessData{
 	public boolean canInsertItem(int i, ItemStack itemStack, int side) {
 		if(i < stacks.size()){
 			InventoryStack invStack = stacks.get(i);
-			return invStack.stack == null || invStack.isReal && itemStack.isItemEqual(invStack.stack) && BlockSide.isSideSelected(invStack.sides, side);
+			return invStack.stack == null || invStack.real && itemStack.isItemEqual(invStack.stack) && BlockSide.isSideSelected(invStack.sides, side);
 		}
 		return false;
 	}
@@ -194,7 +211,7 @@ public class Inventory implements ISidedInventory, IProcessData{
 	public boolean canExtractItem(int i, ItemStack itemStack, int side) {
 		if(i < stacks.size()){
 			InventoryStack invStack = stacks.get(i);
-			return invStack.stack == null || invStack.isReal && itemStack.isItemEqual(invStack.stack) && BlockSide.isSideSelected(invStack.sides, side);
+			return invStack.stack == null || invStack.real && itemStack.isItemEqual(invStack.stack) && BlockSide.isSideSelected(invStack.sides, side);
 		}
 		return false;
 	}
@@ -215,4 +232,11 @@ public class Inventory implements ISidedInventory, IProcessData{
 		}
 	}
 
+	public void addInventoryChangedListener(InventoryChangedListener listener){
+		listeners.add(listener);
+	}
+	
+	public void removeInventoryChangedListener(InventoryChangedListener listener){
+		listeners.remove(listener);
+	}
 }

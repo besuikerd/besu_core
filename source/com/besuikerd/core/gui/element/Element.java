@@ -35,6 +35,7 @@ import com.besuikerd.core.packet.IProcessData;
 import com.besuikerd.core.utils.INamed;
 import com.besuikerd.core.utils.MathUtils;
 import com.besuikerd.core.utils.Tuple;
+import com.besuikerd.core.utils.collection.ArrayUtils;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
@@ -349,7 +350,7 @@ public abstract class Element extends Gui implements IProcessData {
 	protected boolean doTrigger(ITrigger trigger, Object... args){
 		String triggerName = triggers.get(trigger);
 		if(triggerName != null){
-			trigger.trigger(triggerName, getRoot(), this, args);
+			trigger.trigger(triggerName, getRoot(), this, ArrayUtils.prepend(this, args));
 			return true;
 		}
 		return false;
@@ -809,7 +810,7 @@ public abstract class Element extends Gui implements IProcessData {
 		return action(name.getName(), action);
 	}
 	
-	public void onEvent(String name, Object[] args, Element e){
+	public void onEvent(String name, Element e, Object[] args){
 		List<IEventAction> eventActions = actions.get(name);
 		if(eventActions != null){
 			for(IEventAction action : eventActions){

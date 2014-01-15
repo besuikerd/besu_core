@@ -42,4 +42,10 @@ public class ArrayUtils {
 		System.arraycopy(list, 0, result, 0, list.length);
 		return result;
 	}
+	
+	public static <E> E[] copyOfRange(E[] data, int from, int to){
+		E[] result = (E[]) Array.newInstance(data.getClass().getComponentType(), to - from);
+		System.arraycopy(data, from, result, 0, to - from);
+		return result;
+	}
 }

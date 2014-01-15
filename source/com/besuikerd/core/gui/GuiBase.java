@@ -1,12 +1,9 @@
 package com.besuikerd.core.gui;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
 import com.besuikerd.core.gui.element.Element;
 import com.besuikerd.core.gui.element.ElementContainer;
@@ -14,6 +11,7 @@ import com.besuikerd.core.gui.element.ElementRootContainer;
 import com.besuikerd.core.gui.event.EventHandler;
 import com.besuikerd.core.gui.event.IEventHandler;
 import com.besuikerd.core.gui.layout.VerticalLayout;
+import com.besuikerd.core.utils.collection.ArrayUtils;
 
 public class GuiBase implements IEventHandler{
 	
@@ -71,10 +69,18 @@ public class GuiBase implements IEventHandler{
 	}
 
 	@Override
-	public void post(String name, Element e, Object... args) {
-		root.onEvent(name, args, e);
-		eventHandler.post(name, e, args);
-		onEvent(name, e, args);
+	public void post(String name, Object... args) {
+		if(args.length > 0){
+			Object first = args[0];
+			
+			if(first instanceof Element){
+				Element e = (Element) first;
+				Object[] eArgs = ArrayUtils.copyOfRange(args, 1, args.length);
+				root.onEvent(name, e, eArgs);
+				onEvent(name, e, eArgs);
+			}
+		}
+		eventHandler.post(name, args);
 	}
 	
 	public void onEvent(String name, Element e, Object... args){

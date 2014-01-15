@@ -192,10 +192,10 @@ public class ElementContainer extends Element{
 	}
 	
 	@Override
-	public void onEvent(String name, Object[] args, Element e) {
-		super.onEvent(name, args, e);
+	public void onEvent(String name, Element e, Object[] args) {
+		super.onEvent(name, e, args);
 		for(Element el : elements){ //delegate events to children
-			el.onEvent(name, args, e);
+			el.onEvent(name, e, args);
 		}
 	}
 	

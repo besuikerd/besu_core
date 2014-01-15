@@ -99,8 +99,8 @@ public class ElementViewport extends Element {
         }
         
         @Override
-        public void onEvent(String name, Object[] args, Element e) {
-                rootDelegate.onEvent(name, args, e);
+        public void onEvent(String name, Element e, Object[] args) {
+                rootDelegate.onEvent(name, e, args);
         }
 
         @Override

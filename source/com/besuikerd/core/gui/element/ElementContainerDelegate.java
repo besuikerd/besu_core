@@ -38,8 +38,8 @@ public class ElementContainerDelegate extends Element {
 	}
 
 	@Override
-	public void onEvent(String name, Object[] args, Element e) {
-		container.onEvent(name, args, e);
+	public void onEvent(String name, Element e, Object[] args) {
+		container.onEvent(name, e, args);
 	}
 
 	@Override

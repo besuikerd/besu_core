@@ -1,19 +1,26 @@
 package com.besuikerd.core.inventory;
 
+import java.util.Random;
+
 import com.besuikerd.core.tileentity.TileEntityBesu;
 import com.besuikerd.core.utils.NBTUtils;
 
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
-public abstract class TileEntityInventory extends TileEntityBesu implements ISidedInventory{
+public abstract class TileEntityInventory extends TileEntityBesu implements ISidedInventory, InventoryChangedListener{
 	
 	protected Inventory inventory;
 	
 	public TileEntityInventory() {
 		inventory = new Inventory();
+		inventory.addInventoryChangedListener(this);
 		initInventory();
 	}
 	
@@ -114,8 +121,35 @@ public abstract class TileEntityInventory extends TileEntityBesu implements ISid
 		NBTUtils.writeProcessData(inventory, tag, "items");
 	}
 	
+	@Override
+	public void onTileEntityRemoved(World world, int x, int y, int z) {
+		super.onTileEntityRemoved(world, x, y, z);
+		
+		//drop items on the floor
+		Random r = new Random();
+		for(int i = 0 ; i < getSizeInventory() ; i++){
+			ItemStack stack = getStackInSlot(i);
+			InventoryStack inventoryStack = inventory.getInventoryStackAt(i);
+			if(stack != null && inventoryStack != null && inventoryStack.isReal() && stack.stackSize > 0){
+				EntityItem entityItem = new EntityItem(world, x + r.nextDouble() * 0.8 + 0.1, y + r.nextDouble() * 0.8 + 0.1, z + r.nextDouble() * 0.8 + 0.1, stack);
+				entityItem.motionX = r.nextGaussian() * 0.05;
+				entityItem.motionY = r.nextGaussian() * 0.05 + 0.2;
+				entityItem.motionZ = r.nextGaussian() * 0.05;
+				world.spawnEntityInWorld(entityItem);
+			}
+		}
+	}
+	
 	public Inventory getInventory() {
 		return inventory;
 	}
-
+	
+	@Override
+	public void onGroupChanged(InventoryGroup group) {
+	}
+	
+	@Override
+	public void onStackChanged(InventoryStack stack) {
+	}
+	
 }

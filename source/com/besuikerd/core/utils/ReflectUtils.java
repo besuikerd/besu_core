@@ -5,6 +5,7 @@ import static com.besuikerd.core.utils.functional.FunctionalUtils.map;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -13,7 +14,6 @@ import java.util.Set;
 
 import com.besuikerd.core.BLogger;
 import com.besuikerd.core.utils.functional.Predicate;
-import com.google.common.annotations.Beta;
 import com.google.common.primitives.Primitives;
 
 public class ReflectUtils {
@@ -48,6 +48,59 @@ public class ReflectUtils {
 			return invokable.invoke();
 		}
 		return null;
+	}
+	
+	public static Field getField(Object o, Class<?> cls, String name){
+		try {
+			return cls.getDeclaredField(name);
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		} catch (SecurityException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * unsafely access a field in a class and cast it to {@code <E>}
+	 * @param o
+	 * @param name
+	 * @param cls
+	 * @return
+	 */
+	public static <E> E accessField(Object o, Class<?> cls, String name, Class<E> cast){
+		E field = null;
+		try {
+			Field f = getField(o, cls, name);
+			f.setAccessible(true);
+			field = cast.cast(f.get(o));
+		} catch (SecurityException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+		return field;
+	}
+	
+	public static <E> E accessField(Object o, String name, Class<E> cast){
+		return accessField(o, o.getClass(), name, cast);
+	}
+	
+	public static void modifyField(Object o, Class<?> cls, String name, Object newValue){
+		Field f = getField(o, cls, name);
+		f.setAccessible(true);
+		try {
+			f.set(o, newValue);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static void modifyField(Object o, String name, Object newValue){
+		modifyField(o, o.getClass(), name, newValue);
 	}
 	
 	public static void invoke(Object obj, String name, Object... params){
@@ -88,10 +141,11 @@ public class ReflectUtils {
 				}
 				if(matchingConstructor){
 					instance = (E) c.newInstance(args);
-				} else{
-					throw new RuntimeException(String.format("No matching constructor found with the following params: %s", Arrays.toString(parameters)));
+					break;
 				}
-				break;
+			}
+			if(instance == null){
+				throw new RuntimeException(String.format("No matching constructor found with the following params: %s", Arrays.toString(parameters)));
 			}
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);

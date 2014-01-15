@@ -11,5 +11,5 @@ public interface IEventHandler {
 	 * @param e
 	 * @param args
 	 */
-	public void post(String name, Element e, Object... args);
+	public void post(String name, Object... args);
 }
