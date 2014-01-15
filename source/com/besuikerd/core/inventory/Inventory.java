@@ -67,8 +67,10 @@ public class Inventory implements ISidedInventory, IProcessData{
 	private void addStack(InventoryStack stack){
 		stacks.add(stack);
 		stack.index = stacks.size() - 1;
-		for(BlockSide b : stack.getBlockSides()){
-			accessibleSides[b.ordinal()].add(stacks.size() - 1);
+		if(stack.isReal() && InventoryGroup.PLAYER_HOTBAR.equals(stack.group) && !InventoryGroup.PLAYER_INVENTORY.equals(stack.group)){
+			for(BlockSide b : stack.getBlockSides()){
+				accessibleSides[b.ordinal()].add(stacks.size() - 1);
+			}
 		}
 	}
 	

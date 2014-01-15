@@ -6,6 +6,8 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 
+import com.besuikerd.core.BLogger;
+import com.besuikerd.core.BlockSide;
 import com.besuikerd.core.ClientLogger;
 import com.besuikerd.core.gui.GuiBaseInventory;
 import com.besuikerd.core.gui.element.Element;
@@ -19,6 +21,7 @@ import com.besuikerd.core.gui.layout.HorizontalLayout;
 import com.besuikerd.core.inventory.CraftingGroup;
 import com.besuikerd.core.inventory.InventoryGroup;
 import com.besuikerd.core.inventory.InventoryStack;
+import com.besuikerd.core.inventory.InventoryUtils;
 import com.besuikerd.core.inventory.TileEntityInventory;
 import com.besuikerd.core.utils.Tuple;
 
@@ -27,8 +30,9 @@ public class TileEntityTestInventory extends TileEntityInventory {
 	@Override
 	public void initInventory(){
 		inventory.addGroups(
-			new InventoryGroup("craft", 9).shiftGroups(InventoryGroup.PLAYER_INVENTORY_SHIFTGROUPS),
-			new InventoryGroup("result", 1, new InventoryStack.StackBuilder()),
+			new InventoryGroup("fake", 9, new InventoryStack.StackBuilder().real(false).stackLimit(32)),
+			new InventoryGroup("craft", 9, new InventoryStack.StackBuilder().sides(BlockSide.unit())).shiftGroups(InventoryGroup.PLAYER_INVENTORY_SHIFTGROUPS),
+			new InventoryGroup("result", 1, new InventoryStack.StackBuilder().sides(BlockSide.unit())).shiftGroups(InventoryGroup.PLAYER_INVENTORY_SHIFTGROUPS),
 			InventoryGroup.playerInventory().shiftGroups("craft"),
 			InventoryGroup.playerInventoryHotbar().shiftGroups("craft")
 		);
@@ -56,6 +60,7 @@ public class TileEntityTestInventory extends TileEntityInventory {
 				new ElementLabel("TileEntityTestInventory").align(Alignment.CENTER),
 				
 				new ElementContainer().layout(new HorizontalLayout(5,0)).add(
+					new ElementItemContainerArray(this, inventory.getGroup("fake"), 3),
 					new ElementItemContainerArray(this, inventory.getGroup("craft"), 3),
 					ElementProgressBar.progressBarArrow().align(Alignment.CENTER),
 					new ElementItemContainerArray(this, inventory.getGroup("result"), 1).align(Alignment.CENTER)
@@ -79,14 +84,14 @@ public class TileEntityTestInventory extends TileEntityInventory {
 	
 	@Override
 	public void onGroupChanged(InventoryGroup group) {
-		ClientLogger.debug("group: %s", group.getName());
+		ClientLogger.debug("group change!: %s", group.getName());
 		if(group.getName().equals("craft")){
-			
-			ItemStack result = CraftingManager.getInstance().findMatchingRecipe(new CraftingGroup(group), this.worldObj);
-			
-			ClientLogger.debug("result: %s", result);
-			
+			ItemStack result = CraftingManager.getInstance().findMatchingRecipe(new CraftingGroup(group), worldObj);
 			setInventorySlotContents(inventory.getGroup("result").getStacks().iterator().next().getIndex(), result);
+		} else if(group.getName().equals("result")){
+			if(CraftingManager.getInstance().findMatchingRecipe(new CraftingGroup(inventory.getGroup("craft")), worldObj) != null){
+				InventoryUtils.changeGroupStackSize(inventory, inventory.getGroup("craft"), -1);
+			}
 		}
 	}
 }

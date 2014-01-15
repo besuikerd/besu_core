@@ -14,7 +14,6 @@ import org.lwjgl.input.Keyboard;
 import com.besuikerd.core.BLogger;
 import com.besuikerd.core.ClientLogger;
 import com.besuikerd.core.gui.element.Element;
-import com.besuikerd.core.utils.ReflectUtils;
 
 /**
  * container that has automated container logic for a
@@ -68,6 +67,11 @@ public class ContainerBesu extends Container {
 	 * right clicked on a slot
 	 */
 	public static final int TYPE_CLICK_RIGHT = 1;
+	
+	/**
+	 * type nothing when a distribution is started
+	 */
+	public static final int TYPE_NOTHING = 0;
 
 	public static final int MOUSE_LEFT = Element.BUTTON_LEFT;
 	public static final int MOUSE_MIDDLE = Element.BUTTON_MIDDLE;
@@ -106,13 +110,16 @@ public class ContainerBesu extends Container {
 	public ItemStack slotClick(int index, int type, int modifier, EntityPlayer player) {
 		ItemStack returnStack = null;
 		if (index >= 0) { //regular slot click
+			Slot slot = getSlot(index);
+			if (modifier == MOD_DISTRIBUTE) { //add this slot to the distributeSlots
+				distributeSlots.add(slot);
+			}
 			ItemStack stackPlayer = (stackPlayer = player.inventory.getItemStack()) != null ? stackPlayer.copy() : null;
 			InventoryStack stack = inventory.getInventoryStackAt(index);
 			if (stack.isReal()) {
 				returnStack = super.slotClick(index, type, modifier, player);
-				
 			} else{
-				Slot slot = getSlot(index);
+				
 				returnStack = handleFakeSlot(slot, stack, stackPlayer, type, modifier);
 			}
 			
@@ -120,30 +127,35 @@ public class ContainerBesu extends Container {
 				inventory.onGroupChanged(stack.group);
 				inventory.onStackChanged(stack); //a real stack change
 			}
-		} else if (index == INDEX_DISTRIBUTION && !distributeSlots.isEmpty()) { //slot distribution!
+			
+			
+		} else if (index == INDEX_DISTRIBUTION && type != TYPE_NOTHING && type != 4) { //slot distribution!
 			ItemStack stackPlayer = (stackPlayer = player.inventory.getItemStack()) != null ? stackPlayer.copy() : null;
 			stackPlayer.stackSize = stackPlayer.stackSize / distributeSlots.size();
 			Set<InventoryGroup> groups = new HashSet<InventoryGroup>();
 			
+			boolean containsFakeSlots = false;
+			
 			for (Slot s : distributeSlots) {
-				handleFakeSlot(s, inventory.getInventoryStackAt(s.getSlotIndex()), stackPlayer, type == TYPE_DISTRIBUTE ? TYPE_CLICK_LEFT : TYPE_CLICK_RIGHT, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) ? MOD_SHIFT : MOD_NOTHING);
 				InventoryStack stack = inventory.getInventoryStackAt(s.getSlotIndex());
 				inventory.onStackChanged(stack);
+				if(!stack.isReal()){
+					containsFakeSlots = true;
+					handleFakeSlot(s, inventory.getInventoryStackAt(s.getSlotIndex()), stackPlayer, type == TYPE_DISTRIBUTE ? TYPE_CLICK_LEFT : TYPE_CLICK_RIGHT, Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) ? MOD_SHIFT : MOD_NOTHING);
+				}
 				groups.add(stack.group);
 			}
 			
+			if(!containsFakeSlots){
+				super.slotClick(index, type, modifier, player);
+			}
+			distributeSlots.clear();
 			
 			for(InventoryGroup group : groups){
 				inventory.onGroupChanged(group);
 			}
-			
-			distributeSlots.clear();
-			func_94533_d(); //clear the Container's distributeSlots Set
 			returnStack = stackPlayer;
 		} else{
-			if(type == TYPE_SINGLE && modifier == MOD_DISTRIBUTE){
-				
-			}
 			returnStack = super.slotClick(index, type, modifier, player);
 		}
 		return returnStack;
@@ -154,9 +166,7 @@ public class ContainerBesu extends Container {
 		ItemStack stackSlot = (stackSlot = slot.getStack()) != null ? stackSlot.copy() : null;
 		//		ClientLogger.debug("index: %4d, type: %4d, mod: %4d", slot.getSlotIndex(), type, modifier);
 
-		if (modifier == MOD_DISTRIBUTE) { //add this slot to the distributeSlots
-			distributeSlots.add(slot);
-		} else if (stackSlot == null) {
+		if (stackSlot == null) {
 			if (stackPlayer != null) {
 				stackPlayer.stackSize = Math.min(stackPlayer.stackSize, stack.getStackLimit()); //limit the playerStack.stackSize to the inventory stack limit
 				if (modifier != MOD_SHIFT) { //shiftingclicking on an empty fake slot doesn't do anything

@@ -118,6 +118,9 @@ public enum BlockSide {
 				};
 			}
 		};
-		
+	}
+	
+	public static BlockSide[] unit(){
+		return new BlockSide[0];
 	}
 }

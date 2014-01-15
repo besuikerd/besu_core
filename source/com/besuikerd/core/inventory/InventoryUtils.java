@@ -16,4 +16,16 @@ public class InventoryUtils {
 					&& ItemStack.areItemStackTagsEqual(first, snd)
 					&& first.isItemEqual(snd);
 	}
+	
+	public static void changeGroupStackSize(Inventory inventory, InventoryGroup group, int count){
+		for(InventoryStack stack : group.getStacks()){
+			if(stack.stack != null){
+				stack.stack.stackSize = Math.min(stack.getStackLimit(), stack.stack.stackSize + count);
+				if(stack.stack.stackSize <= 0){
+					stack.stack = null;
+				}
+			}
+		}
+		inventory.onGroupChanged(group);
+	}
 }
