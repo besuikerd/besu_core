@@ -35,7 +35,7 @@ public abstract class BlockContainerBesu extends BlockBesu implements ITileEntit
 			((TileEntityBesu) tile).onTileEntityRemoved(world, x, y, z);
 		}
 		
-		ServerLogger.debug("onRemove: %d [%s - %s]", p.getTime() + p2.getTime(), p, p2);
+//		ServerLogger.debug("onRemove: %d [%s - %s]", p.getTime() + p2.getTime(), p, p2);
 	}
 	
 	@Override

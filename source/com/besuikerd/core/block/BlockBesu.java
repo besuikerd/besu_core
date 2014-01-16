@@ -45,7 +45,7 @@ public class BlockBesu extends Block{
 	}
 	
 	public void onBlockPlacedPositioned(World world, int x, int y, int z, BlockSide side, BlockSide direction, ItemStack stack){
-		ServerLogger.debug("block placed with side: %s and direction: %s", side, direction);
+//		ServerLogger.debug("block placed with side: %s and direction: %s", side, direction);
 	}
 	
 
@@ -56,5 +56,10 @@ public class BlockBesu extends Block{
 			int z, EntityPlayer player, int unknown, float aX,
 			float aY, float aZ) {
 		return super.onBlockActivated(world, x, y, z, player, unknown, aX, aY, aZ);
+	}
+	
+	@Override
+	public void registerIcons(IconRegister reg) {
+		super.registerIcons(reg);
 	}
 }
