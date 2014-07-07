@@ -1,10 +1,11 @@
 package com.besuikerd.core;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.relauncher.Side;
 
 /**
@@ -14,11 +15,8 @@ import cpw.mods.fml.relauncher.Side;
  */
 public class ClientLogger {
 	
-	private static final Logger logger = Logger.getLogger("Besuikerd");
-	
-	public static void init(){
-		logger.setParent(FMLLog.getLogger());
-	}
+	private static final Logger logger = LogManager.getLogger("Besuikerd");
+	private static boolean debugMode = false;
 	
 	public static void log(Level level, Object msg, Object... params){
 		Side side = FMLCommonHandler.instance().getEffectiveSide();
@@ -35,19 +33,19 @@ public class ClientLogger {
 	}
 	
 	public static void warn(Object msg, Object... params){
-		log(Level.WARNING, msg, params);
+		log(Level.WARN, msg, params);
 	}
 	
 	public static void warn(Object msg){
-		log(Level.WARNING, msg);
+		log(Level.WARN, msg);
 	}
 	
 	public static void error(Object msg, Object... params){
-		log(Level.SEVERE, msg, params);
+		log(Level.ERROR, msg, params);
 	}
 	
 	public static void error(Object msg){
-		log(Level.SEVERE, msg);
+		log(Level.ERROR, msg);
 	}
 	
 	public static void info(Object msg, Object... params){
@@ -59,14 +57,27 @@ public class ClientLogger {
 	}
 	
 	public static void debug(Object msg, Object... params){
-		if(BLogger.isDebugMode()){
+		if(debugMode){
 			info(msg, params);
 		}
 	}
 	
 	public static void debug(String msg){
-		if(BLogger.isDebugMode()){
+		if(debugMode){
 			info(msg);
 		}
+	}
+	
+	public static boolean isDebugMode(){
+		return debugMode;
+	}
+	
+	public static void setDebugMode(boolean enabled){
+		if(!debugMode && enabled){
+			info("Debug mode is enabled. More debug messages will be printed");
+		} else if(debugMode && !enabled){
+			info("Debug mode is disabled. Less debug messages will be printed");
+		}
+		debugMode = enabled;
 	}
 }

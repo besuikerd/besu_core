@@ -103,7 +103,7 @@ public enum BlockSide {
 						while(found == null && i < values().length){
 							BlockSide side = values()[i++];
 							int[] rel = side.getRelativeCoordinates(x, y, z);
-							TileEntity tile = world.getBlockTileEntity(rel[0], rel[1], rel[2]);
+							TileEntity tile = world.getTileEntity(rel[0], rel[1], rel[2]);
 							if(tile != null && cls.isInstance(tile)){
 								found = cls.cast(tile);
 							}

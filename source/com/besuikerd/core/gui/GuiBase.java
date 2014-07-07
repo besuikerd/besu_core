@@ -30,8 +30,6 @@ public class GuiBase implements IEventHandler{
 		eventHandler.setHandlerObject(o);
 	}
 
-	private static final ResourceLocation bg = new ResourceLocation("textures/gui/demo_background.png");
-
 	/**
 	 * Override this method to attach Elements to the {@link #root} container
 	 */

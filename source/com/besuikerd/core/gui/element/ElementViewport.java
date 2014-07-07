@@ -75,12 +75,6 @@ public class ElementViewport extends Element {
                 if(heightDimension == LayoutDimension.WRAP_CONTENT){
                         this.height = element.getPaddedHeight();
                 }
-
-                //limit root delegate within bounds of the real root
-                this.rootDelegate.width = Math.min(width, getRoot().width);
-                this.rootDelegate.height = Math.min(height, getRoot().height);
-                this.rootDelegate.dx = Math.max(absX(), getRoot().absX());
-                this.rootDelegate.dy = Math.max(absY(), getRoot().absY());
         }
 
         @Override
@@ -107,6 +101,13 @@ public class ElementViewport extends Element {
         public void draw() {
         	element.dx = absX();
             element.dy = absY();
+            
+            //limit root delegate within bounds of the real root
+            this.rootDelegate.width = Math.min(width, getRoot().width);
+            this.rootDelegate.height = Math.min(height, getRoot().height);
+            this.rootDelegate.dx = Math.max(absX(), getRoot().absX());
+            this.rootDelegate.dy = Math.max(absY(), getRoot().absY());
+            
             super.draw();
             glEnable(GL_STENCIL_TEST);
             glStencilFunc(GL_ALWAYS, 0x1, 0xff);

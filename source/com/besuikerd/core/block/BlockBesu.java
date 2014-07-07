@@ -2,7 +2,7 @@ package com.besuikerd.core.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,19 +10,11 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 import com.besuikerd.core.BlockSide;
-import com.besuikerd.core.ServerLogger;
 
 public class BlockBesu extends Block{
 	
-	public BlockBesu(int id, Material material) {
-		super(id, material);
-		setUnlocalizedName("nc");
-	}
-	
-	public String appendUnlocalizedName(String toAppend){
-		String newName = String.format("%s.%s", getUnlocalizedName().substring("tile.".length()), toAppend);
-		setUnlocalizedName(newName);
-		return newName;
+	public BlockBesu(Material material) {
+		super(material);
 	}
 	
 	@Override
@@ -58,8 +50,9 @@ public class BlockBesu extends Block{
 		return super.onBlockActivated(world, x, y, z, player, unknown, aX, aY, aZ);
 	}
 	
+	
 	@Override
-	public void registerIcons(IconRegister reg) {
-		super.registerIcons(reg);
+	public void registerBlockIcons(IIconRegister register) {
+		super.registerBlockIcons(register);
 	}
 }

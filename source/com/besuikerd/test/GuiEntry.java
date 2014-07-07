@@ -11,7 +11,7 @@ import com.besuikerd.core.inventory.ContainerBesu;
 public enum GuiEntry implements IGuiEntry{
 	
 	TESTINVENTORY("testInventory", ContainerBesu.class, TileEntityTestInventory.Gui.class, GuiBinder.TILE_ENTITY),
-	TESTGUI("testGui", null, TileEntityTestGui.Gui.class, GuiBinder.DEFAULT),
+	TESTGUI("testGui", ContainerBesu.class, TileEntityTestGui.Gui.class, GuiBinder.DEFAULT),
 	
 	;
 	

@@ -1,31 +1,26 @@
 package com.besuikerd.test;
 
-import java.util.Random;
-
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-import com.besuikerd.core.BesuCore;
 import com.besuikerd.core.block.BlockContainerBesu;
 
 public class BlockTestInventory extends BlockContainerBesu{
 
-	protected Icon icon;
+	protected IIcon icon;
 	
-	public BlockTestInventory(int id) {
-		super(id, Material.ground);
-		appendUnlocalizedName("testinventory");
+	public BlockTestInventory() {
+		super(Material.ground);
+		setCreativeTab(CreativeTabs.tabRedstone);
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World world) {
+	public TileEntity createNewTileEntity(World world, int someUnknownValue) {
 		return new TileEntityTestInventory();
 	}
 	
@@ -37,12 +32,12 @@ public class BlockTestInventory extends BlockContainerBesu{
 	}
 	
 	@Override
-	public void registerIcons(IconRegister reg) {
+	public void registerBlockIcons(IIconRegister reg) {
 		icon = reg.registerIcon("diamond_block");
 	}
 	
 	@Override
-	public Icon getIcon(int par1, int par2) {
+	public IIcon getIcon(int par1, int par2) {
 		return icon;
 	}
 }

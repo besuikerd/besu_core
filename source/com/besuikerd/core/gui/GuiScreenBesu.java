@@ -49,7 +49,7 @@ public class GuiScreenBesu extends GuiScreen{
 	public void handleKeyboardInput() {
 		if(!gui.handleKeyboardInput()){
 			super.handleKeyboardInput();
-			if(Keyboard.getEventKey() == mc.gameSettings.keyBindInventory.keyCode){
+			if(Keyboard.getEventKey() == mc.gameSettings.keyBindInventory.getKeyCode()){
                 mc.thePlayer.closeScreen();
 			}
 		}

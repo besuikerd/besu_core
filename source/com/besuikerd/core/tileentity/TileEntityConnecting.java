@@ -2,13 +2,11 @@ package com.besuikerd.core.tileentity;
 
 import java.util.Arrays;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
+
 import com.besuikerd.core.BLogger;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet132TileEntityData;
-import net.minecraft.tileentity.TileEntity;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public abstract class TileEntityConnecting extends TileEntityBesu{
@@ -21,19 +19,6 @@ public abstract class TileEntityConnecting extends TileEntityBesu{
 	}
 	
 	public void onConnected(TileEntity other){}
-	
-	@Override
-	public Packet getDescriptionPacket() {
-		NBTTagCompound tag = new NBTTagCompound();
-		writeToNBT(tag);
-		return new Packet132TileEntityData(xCoord, yCoord, zCoord, 1, tag);
-	}
-	
-	@Override
-	public void onDataPacket(INetworkManager net, Packet132TileEntityData pkt) {
-		super.onDataPacket(net, pkt);
-		readFromNBT(pkt.data);
-	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound tagCompound) {		

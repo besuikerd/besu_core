@@ -5,8 +5,8 @@ import net.minecraft.world.IBlockAccess;
 
 public abstract class BlockConnecting extends BlockContainerBesu {
 	
-	public BlockConnecting(int id, Material material) {
-		super(id, material);
+	public BlockConnecting(Material material) {
+		super(material);
 		this.isBlockContainer = true;
 	}
 	

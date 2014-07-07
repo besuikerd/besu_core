@@ -33,7 +33,7 @@ public enum GuiBinder implements IGuiBinder{
 	TILE_ENTITY(DEFAULT){
 		@Override
 		public void bind(GuiBase g, Container c, EntityPlayer player, World world, int x, int y, int z) {
-			TileEntity tile = world.getBlockTileEntity(x, y, z);
+			TileEntity tile = world.getTileEntity(x, y, z);
 			if(tile != null){
 				if(g instanceof GuiBase){
 					((GuiBase) g).bindEventHandler(tile);

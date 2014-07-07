@@ -85,26 +85,24 @@ public class ElementScrollBar extends ElementContainer {
                 super.draw();
         }
         
-                private class ElementScrollerContainer extends ElementStyledContainer {
-                
-
-                public ElementScrollerContainer(int width, int height) {
-                        super(width, height, ScalableTexture.SLOT);
-                        padding(0); //no padding is fine
-                }
-
-                @Override
-                protected boolean onPressed(int x, int y, int which) {
-                        if(self.isEnabled() && !MathUtils.inRange2D(x, scroller.x, scroller.x + scroller.width, y, scroller.y, scroller.y + scroller.height)){ // only do this when scroller isn't in range
-                                
-                                if(orientation == Orientation.VERTICAL){
-                                        setProgress((double) (y - scroller.height / 2) / (height - scroller.height));
-                                } else{
-                                        setProgress((double) (x - scroller.width / 2) / (width - scroller.width));
-                                }
-                        }
-                        return true;
-                }
+        private class ElementScrollerContainer extends ElementStyledContainer {
+	        public ElementScrollerContainer(int width, int height) {
+	                super(width, height, ScalableTexture.SLOT);
+	                padding(0); //no padding is fine
+	        }
+	
+	        @Override
+	        protected boolean onPressed(int x, int y, int which) {
+	                if(self.isEnabled() && !MathUtils.inRange2D(x, scroller.x, scroller.x + scroller.width, y, scroller.y, scroller.y + scroller.height)){ // only do this when scroller isn't in range
+	                        
+	                        if(orientation == Orientation.VERTICAL){
+	                                setProgress((double) (y - scroller.height / 2) / (height - scroller.height));
+	                        } else{
+	                                setProgress((double) (x - scroller.width / 2) / (width - scroller.width));
+	                        }
+	                }
+	                return true;
+	        }
         }
 
         private class ElementScroller extends ElementStatefulBackground {

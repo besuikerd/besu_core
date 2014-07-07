@@ -1,7 +1,8 @@
 package com.besuikerd.core.packet;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.Packet;
+import net.minecraft.network.play.client.C17PacketCustomPayload;
 
 import com.besuikerd.core.exception.NetworkCraftException;
 import com.besuikerd.core.exception.NetworkCraftProtocolException;
@@ -11,7 +12,7 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.handshake.NetworkDispatcher;
 import cpw.mods.fml.relauncher.Side;
 
 /**
@@ -71,7 +72,7 @@ public abstract class PacketBesu implements IProcessData{
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeByte(id);
 		write(out);
-		return PacketDispatcher.getPacket(channel, out.toByteArray());
+		return new C17PacketCustomPayload(channel, out.toByteArray());
 	}
 	
 	public abstract void onReceive(Side side);

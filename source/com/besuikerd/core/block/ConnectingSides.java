@@ -37,7 +37,7 @@ public class ConnectingSides implements IConnectingSides, IProcessData{
 		byte oldConnections = connectingSides;
 		for(BlockSide side : BlockSide.values()){
 			int[] rel = side.getRelativeCoordinates(entity.xCoord, entity.yCoord, entity.zCoord);
-			TileEntity other = (TileEntity) entity.worldObj.getBlockTileEntity(rel[0], rel[1], rel[2]);
+			TileEntity other = (TileEntity) entity.getWorldObj().getTileEntity(rel[0], rel[1], rel[2]);
 			
 			//set bit for current side if other IConnectingSide exists and connects to this IConnectingSide
 			connectingSides = BitUtils.toggle(connectingSides, side.ordinal() + 1, other != null && (entity instanceof IConnectingSides ? ((IConnectingSides) entity).connectsTo(other) : connectsTo(other)));
@@ -45,7 +45,7 @@ public class ConnectingSides implements IConnectingSides, IProcessData{
 //		BLogger.debug("sides have changed: %b", oldConnections != connectingSides);
 		//sides have changed
 		if(oldConnections != connectingSides){
-			entity.worldObj.markBlockForUpdate(entity.xCoord, entity.yCoord, entity.zCoord);
+			entity.getWorldObj().markBlockForUpdate(entity.xCoord, entity.yCoord, entity.zCoord);
 		}
 	}
 
@@ -58,7 +58,7 @@ public class ConnectingSides implements IConnectingSides, IProcessData{
 	public void validateNeighbours(){
 		for(BlockSide b : BlockSide.values()){
 			int[] rel = b.getRelativeCoordinates(entity.xCoord, entity.yCoord, entity.zCoord);
-			TileEntity other = entity.worldObj.getBlockTileEntity(rel[0], rel[1], rel[2]);
+			TileEntity other = entity.getWorldObj().getTileEntity(rel[0], rel[1], rel[2]);
 			if(other != null && other instanceof IConnectingSides){
 				((IConnectingSides) other).validateConnections();
 			}

@@ -46,5 +46,4 @@ public class RadioGroup{
 			selectedIndex = buttons.size() - 1;
 		}
 	}
-	
 }
